@@ -1,4 +1,4 @@
-	local retangulo1 = {
+local retangulo1 = {
 	x = 50,
 	y = 300, 
 	speedY = 200,
@@ -11,10 +11,11 @@
 local retangulo2 = {
 	x = 750,
 	y = 300, 
+	speedY = 200,
 	width = 20, 
 	height = 80,
-	touchUp = false
-
+	touchUp = false,
+	touchDown = false
 }
 
 local ball = {
@@ -23,10 +24,10 @@ local ball = {
 	radius = 15
 
 }
+
 local function isToucheEdge(retangulo1, retangulo2) 
 
 	if retangulo1.y - retangulo1.height < 0 then
-		
 		retangulo1.touchUp = true
 	else
 		retangulo1.touchUp = false
@@ -38,10 +39,22 @@ local function isToucheEdge(retangulo1, retangulo2)
 		retangulo1.touchDown = false
 	end
 
+	if retangulo2.y - retangulo2.height < 0 then
+		retangulo2.touchUp = true
+	else
+		retangulo2.touchUp = false
+	end
+
+	if retangulo2.y + retangulo2.height > love.graphics.getHeight() then
+		retangulo2.touchDown = true
+	else
+		retangulo2.touchDown = false
+	end
+
 end
 
 function love.update(dt)
-	print(retangulo1.y)
+
 	isToucheEdge(retangulo1, retangulo2)
 
 	if love.keyboard.isDown("w") and retangulo1.touchUp == false then
@@ -50,6 +63,14 @@ function love.update(dt)
 
 	if love.keyboard.isDown("s") and retangulo1.touchDown == false then
 		retangulo1.y = retangulo1.y + retangulo1.speedY * dt
+	end
+
+	if love.keyboard.isDown("o") and retangulo2.touchUp == false then
+		retangulo2.y = retangulo2.y - retangulo2.speedY * dt
+	end
+
+	if love.keyboard.isDown("l") and retangulo2.touchDown == false then
+		retangulo2.y = retangulo2.y + retangulo2.speedY * dt
 	end
 end
 
