@@ -17,6 +17,12 @@ local retangulo2 = {
 
 }
 
+local ball = {
+	x = 400,
+	y = 300,
+	radius = 15
+
+}
 local function isToucheEdge(retangulo1, retangulo2) 
 
 	if retangulo1.y - retangulo1.height < 0 then
@@ -50,4 +56,5 @@ end
 function love.draw()
 	love.graphics.rectangle("fill", retangulo1.x, retangulo1.y, retangulo1.width, retangulo1.height)
 	love.graphics.rectangle("fill", retangulo2.x, retangulo2.y, retangulo2.width, retangulo2.height)
+	love.graphics.circle("fill", ball.x, ball.y, ball.radius)
 end
