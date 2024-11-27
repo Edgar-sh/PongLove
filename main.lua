@@ -1,91 +1,82 @@
-local rectangle1 = {
-	x = 50,
-	y = 300, 
-	speedY = 250,
-	width = 20, 
-	height = 80,
-	touchUp = false,
-	touchDown = false
-}
+local Rectangle = {}
+-- Construtor que retorna uma nova instancia de Rectangle
+function Rectangle:new(x, y, speedY, width, height, touchUp, touchDown)
+	local obj = {
+		x = x,
+		y = y,
+		speedY = speedY or 200,
+		width = width,
+		height = height,
+		touchUp = touchUp or false,
+		touchDown = touchDown or false
+	}
+	-- Define Retangulo como a metatable do objeto
+	setmetatable(obj, self)
+	self.__index = self
 
-local rectangle2 = {
-	x = 750,
-	y = 300, 
-	speedY = 200,
-	width = 20, 
-	height = 80,
-	touchUp = false,
-	touchDown = false
-}
+	return obj
+end
+
+-- Metodo para desenhar o retangulo
+function Rectangle:draw()
+	love.graphics.rectangle("fill", self.x, self.y, self.width, self.height)
+end
+
+-- Metodo para mover o retangulo
+function Rectangle:update(keyUp, keyDown, dt)
+	
+	--condição que detectar quando a tecla keyUp foi clicada
+	if love.keyboard.isDown(keyUp) and self.touchUp == false then
+		self.y = self.y - self.speedY * dt
+	end
+
+	--condição que detectar quando a tecla keyDown foi clicada
+	if love.keyboard.isDown(keyDown) and self.touchDown == false then
+		self.y = self.y + self.speedY * dt
+	end
+
+end
+
+-- Metodo para detectar colisão do retangulo
+function Rectangle:detectColision()
+
+	-- Colisão player com a borda superior
+	if self.y <= 0 then
+		self.touchUp = true
+		self.y = 0
+	else
+		self.touchUp = false
+	end
+
+	-- Colisão player com a borda inferior
+	if self.y + self.height >= love.graphics.getHeight() then
+		self.touchDown = true
+		self.y = love.graphics.getHeight() - self.height
+	else
+		self.touchDown = false
+	end
+end
 
 local ball = {
 	x = 400,
 	y = 300,
 	radius = 15
-
 }
 
-local function isToucheEdge(rectangle1, rectangle2) 
-
--- Colisão player 1 com a borda superior
-	if rectangle1.y <= 0 then
-		rectangle1.touchUp = true
-		rectangle1.y = 0
-	else
-		rectangle1.touchUp = false
-	end
-
--- Colisão player 1 com a borda inferior
-	if rectangle1.y + rectangle1.height >= love.graphics.getHeight() then
-		rectangle1.touchDown = true
-		rectangle1.y = love.graphics.getHeight() - rectangle1.height
-	else
-		rectangle1.touchDown = false
-	end
-
--- Colisão player 2 com a borda superior
-	if rectangle2.y <= 0 then
-		rectangle2.touchUp = true
-		rectangle2.y = 0
-	else
-		rectangle2.touchUp = false
-	end
-
--- Colisão player 2 com a borda inferior
-	if rectangle2.y + rectangle2.height >= love.graphics.getHeight() then
-		rectangle2.touchDown = true
-		rectangle2.y = love.graphics.getHeight() - rectangle1.height
-	else
-		rectangle2.touchDown = false
-	end
-
-end
+local rectangle1 = Rectangle:new(50, 300, 200, 20, 80, false, false)
+local rectangle2 = Rectangle:new(750, 300, 200, 20, 80, false, false)
 
 function love.update(dt)
+	rectangle1:detectColision()
+	rectangle2:detectColision()
 
-	isToucheEdge(rectangle1, rectangle2)
+	rectangle1:update("w", "s", dt)
+	rectangle2:update("up", "down", dt)
 
-	if love.keyboard.isDown("w") and rectangle1.touchUp == false then
-		rectangle1.y = rectangle1.y - rectangle1.speedY * dt
-	end
-
-	if love.keyboard.isDown("s") and rectangle1.touchDown == false then
-		rectangle1.y = rectangle1.y + rectangle1.speedY * dt
-	end
-
-	if love.keyboard.isDown("o") and rectangle2.touchUp == false then
-		rectangle2.y = rectangle2.y - rectangle2.speedY * dt
-	end
-
-	if love.keyboard.isDown("l") and rectangle2.touchDown == false then
-		rectangle2.y = rectangle2.y + rectangle2.speedY * dt
-	end
-
-	print("Posição retangulo 1:".." "..rectangle1.y)
 end
 
 function love.draw()
-	love.graphics.rectangle("fill", rectangle1.x, rectangle1.y, rectangle1.width, rectangle1.height)
-	love.graphics.rectangle("fill", rectangle2.x, rectangle2.y, rectangle2.width, rectangle2.height)
+	rectangle1:draw()
+	rectangle2:draw()
 	love.graphics.circle("fill", ball.x, ball.y, ball.radius)
 end
