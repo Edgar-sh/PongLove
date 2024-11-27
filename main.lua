@@ -1,4 +1,5 @@
 local Rectangle = {}
+
 -- Construtor que retorna uma nova instancia de Rectangle
 function Rectangle:new(x, y, speedY, width, height, touchUp, touchDown)
 	local obj = {
@@ -38,7 +39,7 @@ function Rectangle:update(keyUp, keyDown, dt)
 end
 
 -- Metodo para detectar colisão do retangulo
-function Rectangle:detectColision()
+function Rectangle:detect()
 
 	-- Colisão player com a borda superior
 	if self.y <= 0 then
@@ -57,26 +58,60 @@ function Rectangle:detectColision()
 	end
 end
 
-local ball = {
-	x = 400,
-	y = 300,
-	radius = 15
-}
+local Ball = {}
 
+--Contrutor que retorna uma nova instancia de Ball
+function Ball:new(x, y, radius)
+
+	local obj = {
+		x = x,
+		y = y,
+		radius = radius or 15
+	}
+
+	setmetatable(obj, self)
+	self.__index = self
+
+	return obj
+end 
+
+--Metodo para desenhar a bola
+function Ball:draw()
+	love.graphics.circle("fill", self.x, self.y, self.radius)
+end
+
+--Metodo para mover a bola
+function Ball:update(dt)
+	
+end
+
+--Metodo para detectarColisão
+function Ball:colision(ret1, ret2)
+	print("Retangulo 1:".." "..ret1.y)
+	print("Retangulo 2:".." "..ret2.y)
+end
+
+--Instancia de Ball
+local ball = Ball:new(400, 300, 15)
+
+--Instancia de Rectangle
 local rectangle1 = Rectangle:new(50, 300, 200, 20, 80, false, false)
 local rectangle2 = Rectangle:new(750, 300, 200, 20, 80, false, false)
 
 function love.update(dt)
-	rectangle1:detectColision()
-	rectangle2:detectColision()
+	rectangle1:detect()
+	rectangle2:detect()
 
 	rectangle1:update("w", "s", dt)
 	rectangle2:update("up", "down", dt)
 
+	ball:colision(rectangle1, rectangle2)
+
+	ball:update(dt)
 end
 
 function love.draw()
 	rectangle1:draw()
 	rectangle2:draw()
-	love.graphics.circle("fill", ball.x, ball.y, ball.radius)
+	ball:draw()
 end
