@@ -1,14 +1,14 @@
-local retangulo1 = {
+local rectangle1 = {
 	x = 50,
 	y = 300, 
-	speedY = 200,
+	speedY = 250,
 	width = 20, 
 	height = 80,
 	touchUp = false,
 	touchDown = false
 }
 
-local retangulo2 = {
+local rectangle2 = {
 	x = 750,
 	y = 300, 
 	speedY = 200,
@@ -25,57 +25,67 @@ local ball = {
 
 }
 
-local function isToucheEdge(retangulo1, retangulo2) 
+local function isToucheEdge(rectangle1, rectangle2) 
 
-	if retangulo1.y - retangulo1.height < 0 then
-		retangulo1.touchUp = true
+-- Colisão player 1 com a borda superior
+	if rectangle1.y <= 0 then
+		rectangle1.touchUp = true
+		rectangle1.y = 0
 	else
-		retangulo1.touchUp = false
+		rectangle1.touchUp = false
 	end
 
-	if retangulo1.y + retangulo1.height > love.graphics.getHeight() then
-		retangulo1.touchDown = true
+-- Colisão player 1 com a borda inferior
+	if rectangle1.y + rectangle1.height >= love.graphics.getHeight() then
+		rectangle1.touchDown = true
+		rectangle1.y = love.graphics.getHeight() - rectangle1.height
 	else
-		retangulo1.touchDown = false
+		rectangle1.touchDown = false
 	end
 
-	if retangulo2.y - retangulo2.height < 0 then
-		retangulo2.touchUp = true
+-- Colisão player 2 com a borda superior
+	if rectangle2.y <= 0 then
+		rectangle2.touchUp = true
+		rectangle2.y = 0
 	else
-		retangulo2.touchUp = false
+		rectangle2.touchUp = false
 	end
 
-	if retangulo2.y + retangulo2.height > love.graphics.getHeight() then
-		retangulo2.touchDown = true
+-- Colisão player 2 com a borda inferior
+	if rectangle2.y + rectangle2.height >= love.graphics.getHeight() then
+		rectangle2.touchDown = true
+		rectangle2.y = love.graphics.getHeight() - rectangle1.height
 	else
-		retangulo2.touchDown = false
+		rectangle2.touchDown = false
 	end
 
 end
 
 function love.update(dt)
 
-	isToucheEdge(retangulo1, retangulo2)
+	isToucheEdge(rectangle1, rectangle2)
 
-	if love.keyboard.isDown("w") and retangulo1.touchUp == false then
-		retangulo1.y = retangulo1.y - retangulo1.speedY * dt
+	if love.keyboard.isDown("w") and rectangle1.touchUp == false then
+		rectangle1.y = rectangle1.y - rectangle1.speedY * dt
 	end
 
-	if love.keyboard.isDown("s") and retangulo1.touchDown == false then
-		retangulo1.y = retangulo1.y + retangulo1.speedY * dt
+	if love.keyboard.isDown("s") and rectangle1.touchDown == false then
+		rectangle1.y = rectangle1.y + rectangle1.speedY * dt
 	end
 
-	if love.keyboard.isDown("o") and retangulo2.touchUp == false then
-		retangulo2.y = retangulo2.y - retangulo2.speedY * dt
+	if love.keyboard.isDown("o") and rectangle2.touchUp == false then
+		rectangle2.y = rectangle2.y - rectangle2.speedY * dt
 	end
 
-	if love.keyboard.isDown("l") and retangulo2.touchDown == false then
-		retangulo2.y = retangulo2.y + retangulo2.speedY * dt
+	if love.keyboard.isDown("l") and rectangle2.touchDown == false then
+		rectangle2.y = rectangle2.y + rectangle2.speedY * dt
 	end
+
+	print("Posição retangulo 1:".." "..rectangle1.y)
 end
 
 function love.draw()
-	love.graphics.rectangle("fill", retangulo1.x, retangulo1.y, retangulo1.width, retangulo1.height)
-	love.graphics.rectangle("fill", retangulo2.x, retangulo2.y, retangulo2.width, retangulo2.height)
+	love.graphics.rectangle("fill", rectangle1.x, rectangle1.y, rectangle1.width, rectangle1.height)
+	love.graphics.rectangle("fill", rectangle2.x, rectangle2.y, rectangle2.width, rectangle2.height)
 	love.graphics.circle("fill", ball.x, ball.y, ball.radius)
 end
