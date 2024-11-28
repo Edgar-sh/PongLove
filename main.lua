@@ -1,14 +1,12 @@
 
---Instancia de Ball
+--Importando Ball e Rectangle
 local Ball = require("scripts.Ball")
-
---Criando a bola
-local ball = Ball:new(400, 300, 15)
-
---Instancia de Rectangle
 local Rectangle = require("scripts.Rectangle")
 
---Criando Player 1 e Player2
+--Instanciando a bola
+local ball = Ball:new(400, 300, 150, 150, 15)
+
+--Instancia de Rectangle
 local rectangle1 = Rectangle:new(50, 300, 200, 20, 80, false, false)
 local rectangle2 = Rectangle:new(750, 300, 200, 20, 80, false, false)
 
@@ -27,6 +25,6 @@ end
 function love.draw()
 	rectangle1:draw()
 	rectangle2:draw()
-	
+
 	ball:draw()
 end
